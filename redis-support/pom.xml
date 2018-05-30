@@ -26,7 +26,6 @@
             <artifactId>guava</artifactId>
             <version>19.0</version>
         </dependency>
-
         <dependency>
             <groupId>com.youhaoxi.base</groupId>
             <artifactId>spring-support</artifactId>

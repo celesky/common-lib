@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.youhaoxi.base.redis.standard;
+package com.youhaoxi.base.redis.provider.standard;
 
 import com.youhaoxi.base.redis.JedisProvider;
 import org.slf4j.Logger;

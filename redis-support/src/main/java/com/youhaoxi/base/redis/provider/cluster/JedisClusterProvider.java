@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.youhaoxi.base.redis.cluster;
+package com.youhaoxi.base.redis.provider.cluster;
 
 import com.youhaoxi.base.redis.JedisProvider;
 import redis.clients.jedis.BinaryJedisCluster;

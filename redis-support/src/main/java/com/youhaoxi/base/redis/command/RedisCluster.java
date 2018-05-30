@@ -1,5 +1,6 @@
 package com.youhaoxi.base.redis.command;
 
+import com.youhaoxi.base.redis.JedisProviderFactory;
 import com.youhaoxi.base.redis.JedisProviderFactoryBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,10 +50,11 @@ public class RedisCluster {
         try {
             boolean result = false;
             if (isCluster(groupName)) {
-                result = getJedisClusterCommands(groupName).set(key, value).equals(RESP_OK);
+                result = JedisProviderFactory.getJedisClusterCommands(groupName).set(key, value).equals(RESP_OK);
             } else {
-                result = getJedisCommands(groupName).set(key, value).equals(RESP_OK);
+                result = JedisProviderFactory.getJedisCommands(groupName).set(key, value).equals(RESP_OK);
             }
+            //设置成功 默认设置7天超时
             if (result) {
                 result = setExpire(key,DEFAULT_EXPIRE_TIME);
             }

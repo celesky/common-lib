@@ -3,8 +3,8 @@
  */
 package com.youhaoxi.base.redis;
 
-import com.youhaoxi.base.redis.cluster.JedisClusterProvider;
-import com.youhaoxi.base.redis.standard.JedisStandardProvider;
+import com.youhaoxi.base.redis.provider.cluster.JedisClusterProvider;
+import com.youhaoxi.base.redis.provider.standard.JedisStandardProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
 
 /**
  * redis服务提供者注册工厂
+ * 把redisProvider注册到spring中
+ * 需要在spring.xml中为这个bean配置初始化参数
  * @description <br>
  */
 public class JedisProviderFactoryBean implements ApplicationContextAware,InitializingBean{
@@ -35,7 +37,7 @@ public class JedisProviderFactoryBean implements ApplicationContextAware,Initial
 	
 	private Pattern pattern = Pattern.compile("^.+[:]\\d{1,5}\\s*$");
 
-	private String mode;//
+	private String mode;
 	
 	private JedisPoolConfig jedisPoolConfig;
 	
@@ -75,10 +77,12 @@ public class JedisProviderFactoryBean implements ApplicationContextAware,Initial
 	public void setApplicationContext(ApplicationContext context) throws BeansException {
 		this.context = context;
 	}
-	
-	
-	
 
+
+	/**
+	 * 参数设置完之后执行 注册redisProvider到spring容器中
+	 * @throws Exception
+	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		if(jedisPoolConfig == null)throw new Exception("jedisPoolConfig Not config ??");

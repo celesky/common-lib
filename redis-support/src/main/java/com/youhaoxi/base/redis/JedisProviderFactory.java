@@ -3,8 +3,8 @@
  */
 package com.youhaoxi.base.redis;
 
-import com.youhaoxi.base.redis.cluster.JedisClusterProvider;
-import com.youhaoxi.base.redis.standard.JedisStandardProvider;
+import com.youhaoxi.base.redis.provider.cluster.JedisClusterProvider;
+import com.youhaoxi.base.redis.provider.standard.JedisStandardProvider;
 import com.youhaoxi.base.spring.InstanceFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,6 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * redis实例工厂
+ *
+ * 从spring容器中获取redisProvider 并放入map中管理
  * 
  * @description <br>
  */
@@ -26,7 +28,7 @@ public class JedisProviderFactory {
 	protected static final Logger logger = LoggerFactory.getLogger(JedisProviderFactory.class);
 
 	private static JedisProvider<?, ?> defaultJedisProvider;
-	@SuppressWarnings("rawtypes")
+
 	private static Map<String, JedisProvider> jedisProviders = new ConcurrentHashMap<>();
 
 	public static JedisProvider<?, ?> getJedisProvider(String groupName) {
@@ -43,7 +45,6 @@ public class JedisProviderFactory {
 		return defaultJedisProvider;
 	}
 
-	@SuppressWarnings("rawtypes")
 	private synchronized static void initFactoryFromSpring() {
 		if(defaultJedisProvider == null){
 			//阻塞，直到spring初始化完成

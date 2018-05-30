@@ -12,14 +12,13 @@
     <modules>
         <module>redis-support</module>
         <module>spring-support</module>
-        <module>redis-support2</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.jdk>1.8</project.build.jdk>
         <jedis.version>2.9.0</jedis.version>
-        <spring.version>4.2.9.RELEASE</spring.version>
+        <spring.version>4.3.13.RELEASE</spring.version>
         <support.spring.version>${project.version}</support.spring.version>
     </properties>
 
