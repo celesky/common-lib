@@ -17,13 +17,12 @@ public class ExContextLoaderListener extends ContextLoaderListener {
 	 */
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
-		/**
-		String serviceName = event.getServletContext().getInitParameter("appName");
-		System.setProperty("serviceName", serviceName == null ? "undefined" : serviceName);
-		
-		String crosAllowOrigin = event.getServletContext().getInitParameter("crosAllowOrigin");
-		System.setProperty("crosAllowOrigin", crosAllowOrigin == null ? "*" : crosAllowOrigin);
-		
+//		String serviceName = event.getServletContext().getInitParameter("appName");
+//		System.setProperty("serviceName", serviceName == null ? "undefined" : serviceName);
+//
+//		String crosAllowOrigin = event.getServletContext().getInitParameter("crosAllowOrigin");
+//		System.setProperty("crosAllowOrigin", crosAllowOrigin == null ? "*" : crosAllowOrigin);
+
 		super.contextInitialized(event);
 		WebApplicationContext applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(event.getServletContext());
 		SpringInstanceProvider provider = new SpringInstanceProvider(applicationContext);
@@ -31,6 +30,5 @@ public class ExContextLoaderListener extends ContextLoaderListener {
 		//先确认jvm参数是否设置了日志级别
 	    String logLevel = System.getProperty("log.level");
 		if(logLevel == null)System.setProperty("log.level","INFO");
-		 **/
 	}
 }
