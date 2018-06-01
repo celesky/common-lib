@@ -9,6 +9,11 @@ import com.youhaoxi.base.spring.InstanceFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import redis.clients.jedis.*;
 
@@ -23,7 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * 
  * @description <br>
  */
-public class JedisProviderFactory {
+@Service
+public class JedisProviderFactory implements ApplicationContextAware,DisposableBean {
 
 	protected static final Logger logger = LoggerFactory.getLogger(JedisProviderFactory.class);
 
@@ -31,7 +37,19 @@ public class JedisProviderFactory {
 
 	private static Map<String, JedisProvider> jedisProviders = new ConcurrentHashMap<>();
 
-	public static JedisProvider<?, ?> getJedisProvider(String groupName) {
+    private static ApplicationContext applicationContext = null;
+    @Override
+    public void destroy() throws Exception {
+        applicationContext=null;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+
+    public static JedisProvider<?, ?> getJedisProvider(String groupName) {
 		if(defaultJedisProvider == null){			
 			initFactoryFromSpring();
 		}
@@ -45,12 +63,12 @@ public class JedisProviderFactory {
 		return defaultJedisProvider;
 	}
 
-	private synchronized static void initFactoryFromSpring() {
+    private synchronized static void initFactoryFromSpring() {
 		if(defaultJedisProvider == null){
 			//阻塞，直到spring初始化完成
-			InstanceFactory.waitUtilInitialized();
-			
-			Map<String, JedisProvider> interfaces = InstanceFactory.getInstanceProvider().getInterfaces(JedisProvider.class);
+			//InstanceFactory.waitUtilInitialized();
+
+			Map<String, JedisProvider> interfaces = applicationContext.getBeansOfType(JedisProvider.class);
 			Iterator<JedisProvider> iterator = interfaces.values().iterator();
 			while(iterator.hasNext()){
 				JedisProvider jp = iterator.next();
@@ -60,10 +78,30 @@ public class JedisProviderFactory {
 			if(defaultJedisProvider == null && jedisProviders.size() == 1){
 				defaultJedisProvider = InstanceFactory.getInstance(JedisProvider.class);
 			}
-			
+
 			Assert.notNull(defaultJedisProvider,"无默认缓存配置，请指定一组缓存配置group为default");
 		}
 	}
+
+//	private synchronized static void initFactoryFromSpring() {
+//		if(defaultJedisProvider == null){
+//			//阻塞，直到spring初始化完成
+//			InstanceFactory.waitUtilInitialized();
+//
+//			Map<String, JedisProvider> interfaces = InstanceFactory.getInstanceProvider().getInterfaces(JedisProvider.class);
+//			Iterator<JedisProvider> iterator = interfaces.values().iterator();
+//			while(iterator.hasNext()){
+//				JedisProvider jp = iterator.next();
+//				jedisProviders.put(jp.groupName(), jp);
+//			}
+//			defaultJedisProvider = jedisProviders.get(JedisProviderFactoryBean.DEFAULT_GROUP_NAME);
+//			if(defaultJedisProvider == null && jedisProviders.size() == 1){
+//				defaultJedisProvider = InstanceFactory.getInstance(JedisProvider.class);
+//			}
+//
+//			Assert.notNull(defaultJedisProvider,"无默认缓存配置，请指定一组缓存配置group为default");
+//		}
+//	}
 
 	public static JedisCommands getJedisCommands(String groupName) {
 		return (JedisCommands) getJedisProvider(groupName).get();
@@ -108,4 +146,6 @@ public class JedisProviderFactory {
 	public static boolean isCluster(String groupName){
 		return JedisClusterProvider.MODE.equals(currentMode(groupName));
 	}
+
+
 }

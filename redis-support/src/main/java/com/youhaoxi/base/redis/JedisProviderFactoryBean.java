@@ -5,9 +5,11 @@ package com.youhaoxi.base.redis;
 
 import com.youhaoxi.base.redis.provider.cluster.JedisClusterProvider;
 import com.youhaoxi.base.redis.provider.standard.JedisStandardProvider;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -25,10 +27,13 @@ import java.util.regex.Pattern;
  * 需要在spring.xml中为这个bean配置初始化参数
  * @description <br>
  */
-public class JedisProviderFactoryBean implements ApplicationContextAware,InitializingBean{
+public class JedisProviderFactoryBean implements ApplicationContextAware,InitializingBean,DisposableBean {
 
 	protected static final Logger logger = LoggerFactory.getLogger(JedisProviderFactoryBean.class);
-	/**
+
+    private static ApplicationContext applicationContext = null;
+
+    /**
 	 * 
 	 */
 	public static final String DEFAULT_GROUP_NAME = "default";
@@ -77,6 +82,14 @@ public class JedisProviderFactoryBean implements ApplicationContextAware,Initial
 	public void setApplicationContext(ApplicationContext context) throws BeansException {
 		this.context = context;
 	}
+
+	/*
+	 * 实现DisposableBean接口, 在Context关闭时清理静态变量.
+     */
+    @Override
+    public void destroy() throws Exception {
+        applicationContext = null;
+    }
 
 
 	/**
@@ -127,4 +140,16 @@ public class JedisProviderFactoryBean implements ApplicationContextAware,Initial
 		//
 		logger.info("register JedisProvider OK,Class:{},beanName:{}",beanClass.getSimpleName(),beanName);
 	}
+
+
+    /**
+
+
+    /**
+     * 检查ApplicationContext不为空.
+     */
+    private static void assertContextInjected() {
+        Validate.validState(applicationContext != null,
+                "applicaitonContext属性未注入, 请在applicationContext.xml中定义SpringContextHolder.");
+    }
 }

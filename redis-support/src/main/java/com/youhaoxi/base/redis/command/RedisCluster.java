@@ -59,7 +59,10 @@ public class RedisCluster {
                 result = setExpire(key,DEFAULT_EXPIRE_TIME);
             }
             return result;
-        } finally {
+        } catch (Exception e){
+            logger.error("RedisCluster.set falid", e);
+            return false;
+        }finally {
             getJedisProvider(groupName).release();
         }
     }
@@ -81,6 +84,9 @@ public class RedisCluster {
                 return getJedisCommands(groupName).pexpire(key, seconds * 1000) == 1;
             }
 
+        } catch (Exception e){
+            logger.error("RedisCluster.setExpire falid", e);
+            return false;
         } finally {
             getJedisProvider(groupName).release();
         }
@@ -101,7 +107,10 @@ public class RedisCluster {
             } else {
                 return getJedisCommands(groupName).del(key);
             }
-        } finally {
+        } catch (Exception e){
+            logger.error("RedisCluster.del falid", e);
+            return -10000;
+        }finally {
             getJedisProvider(groupName).release();
         }
     }
@@ -123,6 +132,9 @@ public class RedisCluster {
             } else {
                 return getJedisCommands(groupName).ttl(key);
             }
+        } catch (Exception e){
+            logger.error("RedisCluster.ttl falid", e);
+            return -10000;
         } finally {
             getJedisProvider(groupName).release();
         }
@@ -143,6 +155,9 @@ public class RedisCluster {
             } else {
                 return getJedisCommands(groupName).exists(key);
             }
+        } catch (Exception e){
+            logger.error("RedisCluster.exists falid", e);
+            return false;
         } finally {
             getJedisProvider(groupName).release();
         }
@@ -163,6 +178,9 @@ public class RedisCluster {
             } else {
                 return getBinaryJedisCommands(groupName).exists(key);
             }
+        } catch (Exception e){
+            logger.error("RedisCluster.exists falid", e);
+            return false;
         } finally {
             getJedisProvider(groupName).release();
         }
@@ -183,6 +201,9 @@ public class RedisCluster {
             } else {
                 return getJedisCommands(groupName).type(key);
             }
+        } catch (Exception e){
+            logger.error("RedisCluster.type falid", e);
+            return null;
         } finally {
             getJedisProvider(groupName).release();
         }
@@ -203,6 +224,9 @@ public class RedisCluster {
             } else {
                 return getBinaryJedisCommands(groupName).type(key);
             }
+        }catch (Exception e){
+            logger.error("RedisCluster.type falid", e);
+            return null;
         } finally {
             getJedisProvider(groupName).release();
         }
@@ -225,6 +249,9 @@ public class RedisCluster {
             } else {
                 return getJedisCommands(groupName).expire(key,seconds);
             }
+        }catch (Exception e){
+            logger.error("RedisCluster.expire falid", e);
+            return -10000;
         } finally {
             getJedisProvider(groupName).release();
         }
@@ -247,7 +274,10 @@ public class RedisCluster {
             } else {
                 return getBinaryJedisCommands(groupName).expire(key,seconds);
             }
-        } finally {
+        }catch (Exception e){
+            logger.error("RedisCluster.expire falid", e);
+            return -10000;
+        }finally {
             getJedisProvider(groupName).release();
         }
     }
@@ -269,9 +299,13 @@ public class RedisCluster {
             } else {
                 return getJedisCommands(groupName).expireAt(key,unixTime);
             }
-        } finally {
+        }catch (Exception e){
+            logger.error("RedisCluster.expireAt falid", e);
+            return -10000;
+        }  finally {
             getJedisProvider(groupName).release();
         }
+
     }
 
     /**
@@ -291,9 +325,13 @@ public class RedisCluster {
             } else {
                 return getBinaryJedisCommands(groupName).expireAt(key,unixTime);
             }
+        } catch (Exception e){
+            logger.error("RedisCluster.expireAt falid", e);
+            return -10000;
         } finally {
             getJedisProvider(groupName).release();
         }
+
     }
 
 
