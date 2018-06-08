@@ -12,6 +12,7 @@
     <modules>
         <module>jedis-support</module>
         <module>spring-support</module>
+        <module>luttuce-support</module>
     </modules>
 
     <properties>
@@ -21,6 +22,19 @@
         <spring.version>4.3.13.RELEASE</spring.version>
         <support.spring.version>${project.version}</support.spring.version>
     </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <name>nexus-releases</name>
+            <url>http://115.29.165.30:8091/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>nexus-snapshots</name>
+            <url>http://115.29.165.30:8091/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <build>
         <pluginManagement>
